@@ -1,3 +1,6 @@
+// Constants
+const MINUTES_PER_KM = 3; // Estimated travel time in minutes per kilometer
+
 // Mock data for hospitals
 const hospitals = [
     {
@@ -74,8 +77,15 @@ document.addEventListener('DOMContentLoaded', function() {
     loadTransportRecords();
 });
 
+// Helper function to sanitize HTML and prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Screen navigation
-function showScreen(screenId) {
+function showScreen(screenId, event) {
     // Hide all screens
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
@@ -89,8 +99,10 @@ function showScreen(screenId) {
     // Show selected screen
     document.getElementById(screenId).classList.add('active');
     
-    // Add active class to corresponding tab
-    event.target.classList.add('active');
+    // Add active class to corresponding tab if event is provided
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
 }
 
 // Dashboard functions
@@ -291,28 +303,28 @@ function showRationale() {
     rationaleContent.innerHTML = `
         <div class="rationale-section">
             <div class="rationale-header">
-                <h3>${selectedHospital.name} を推薦</h3>
+                <h3>${escapeHtml(selectedHospital.name)} を推薦</h3>
                 <span class="recommendation-score">${selectedHospital.score.toFixed(0)}点</span>
             </div>
             
             <div class="rationale-text">
                 <p><strong>AI判断根拠：</strong></p>
-                <p>患者様の状態（${currentRequest.symptoms}、重症度: ${currentRequest.severity}）を総合的に分析した結果、
-                ${selectedHospital.name}が最適と判断いたしました。</p>
+                <p>患者様の状態（${escapeHtml(currentRequest.symptoms)}、重症度: ${escapeHtml(currentRequest.severity)}）を総合的に分析した結果、
+                ${escapeHtml(selectedHospital.name)}が最適と判断いたしました。</p>
                 
                 <p>主な推薦理由は以下の通りです：</p>
             </div>
             
             <div class="criteria-list">
                 ${selectedHospital.reasons.map(reason => `
-                    <div class="criteria-item">✓ ${reason}</div>
+                    <div class="criteria-item">✓ ${escapeHtml(reason)}</div>
                 `).join('')}
             </div>
             
             <div class="rationale-text">
                 <p><strong>詳細分析：</strong></p>
                 <ul>
-                    <li><strong>距離:</strong> ${selectedHospital.distance}km（所要時間: 約${Math.ceil(selectedHospital.distance * 3)}分）</li>
+                    <li><strong>距離:</strong> ${selectedHospital.distance}km（所要時間: 約${Math.ceil(selectedHospital.distance * MINUTES_PER_KM)}分）</li>
                     <li><strong>専門医:</strong> ${selectedHospital.specialties.join('、')}の専門医が在籍</li>
                     <li><strong>過去実績:</strong> 過去30日間の受入成功率 ${(selectedHospital.successRate * 100).toFixed(0)}%</li>
                     <li><strong>現在の空き病床:</strong> ${selectedHospital.availableBeds}床（受入可能）</li>
@@ -331,7 +343,7 @@ function showRationale() {
     `;
     
     // Switch to rationale screen
-    document.getElementById('rationale').classList.remove('active');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('rationale').classList.add('active');
     document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-button')[2].classList.add('active');
@@ -515,13 +527,13 @@ function displayTransportRecords() {
     
     recordList.innerHTML = transportRecords.map(record => `
         <div class="record-item">
-            <div class="record-date">${record.date}</div>
+            <div class="record-date">${escapeHtml(record.date)}</div>
             <div class="record-details">
-                <div><strong>病院:</strong> ${record.hospital}</div>
-                <div><strong>結果:</strong> ${record.acceptance}</div>
-                <div><strong>所要時間:</strong> ${record.transportTime}分</div>
+                <div><strong>病院:</strong> ${escapeHtml(record.hospital)}</div>
+                <div><strong>結果:</strong> ${escapeHtml(record.acceptance)}</div>
+                <div><strong>所要時間:</strong> ${escapeHtml(record.transportTime)}分</div>
             </div>
-            ${record.notes ? `<div style="margin-top: 8px; color: #555;"><strong>備考:</strong> ${record.notes}</div>` : ''}
+            ${record.notes ? `<div style="margin-top: 8px; color: #555;"><strong>備考:</strong> ${escapeHtml(record.notes)}</div>` : ''}
         </div>
     `).join('');
 }

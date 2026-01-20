@@ -14,11 +14,11 @@
         </header>
 
         <nav class="tab-navigation">
-            <button class="tab-button active" onclick="showScreen('dashboard')">① ダッシュボード</button>
-            <button class="tab-button" onclick="showScreen('request')">② 救急・紹介依頼</button>
-            <button class="tab-button" onclick="showScreen('rationale')" id="rationaleTab" disabled>③ AI判断根拠</button>
-            <button class="tab-button" onclick="showScreen('referral')" id="referralTab" disabled>④ 紹介・交渉支援</button>
-            <button class="tab-button" onclick="showScreen('record')">⑤ 搬送後記録</button>
+            <button class="tab-button active" onclick="showScreen('dashboard', event)">① ダッシュボード</button>
+            <button class="tab-button" onclick="showScreen('request', event)">② 救急・紹介依頼</button>
+            <button class="tab-button" onclick="showScreen('rationale', event)" id="rationaleTab" disabled aria-label="AI判断根拠タブ。病院を選択すると有効になります">③ AI判断根拠</button>
+            <button class="tab-button" onclick="showScreen('referral', event)" id="referralTab" disabled aria-label="紹介・交渉支援タブ。AI推薦を承認すると有効になります">④ 紹介・交渉支援</button>
+            <button class="tab-button" onclick="showScreen('record', event)">⑤ 搬送後記録</button>
         </nav>
 
         <!-- Screen ① Dashboard -->
