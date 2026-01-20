@@ -127,13 +127,13 @@ function createHospitalCard(hospital) {
     
     card.innerHTML = `
         <div class="hospital-header">
-            <div class="hospital-name">${hospital.name}</div>
+            <div class="hospital-name">${escapeHtml(hospital.name)}</div>
             <span class="status-badge ${status}">${statusText}</span>
         </div>
         <div class="hospital-info">
             <div class="info-item">
                 <span class="info-label">診療科:</span>
-                <span class="info-value">${hospital.departments.join(', ')}</span>
+                <span class="info-value">${hospital.departments.map(d => escapeHtml(d)).join(', ')}</span>
             </div>
             <div class="info-item">
                 <span class="info-label">空き病床:</span>
@@ -268,9 +268,9 @@ function displayRecommendations(recommendations) {
         card.innerHTML = `
             <span class="recommendation-rank">推薦順位 ${index + 1}</span>
             <span class="recommendation-score">${hospital.score.toFixed(0)}点</span>
-            <h3>${hospital.name}</h3>
+            <h3>${escapeHtml(hospital.name)}</h3>
             <ul>
-                ${hospital.reasons.map(reason => `<li>${reason}</li>`).join('')}
+                ${hospital.reasons.map(reason => `<li>${escapeHtml(reason)}</li>`).join('')}
             </ul>
         `;
         
@@ -375,7 +375,8 @@ function rejectRecommendation() {
 // Referral document functions
 function generateReferralDocuments() {
     const today = new Date().toLocaleDateString('ja-JP');
-    
+    // Note: Using template literals for textarea content - values are not rendered as HTML
+    // but escaped for consistency and defense-in-depth
     const referralLetter = `
 紹介状
 
