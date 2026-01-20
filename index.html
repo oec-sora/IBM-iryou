@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医療リソース自律調整AI Agent</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>医療リソース自律調整AI Agent</h1>
+            <p class="subtitle">地域医療向け最適病院推薦システム（モック版）</p>
+        </header>
+
+        <nav class="tab-navigation">
+            <button class="tab-button active" onclick="showScreen('dashboard')">① ダッシュボード</button>
+            <button class="tab-button" onclick="showScreen('request')">② 救急・紹介依頼</button>
+            <button class="tab-button" onclick="showScreen('rationale')" id="rationaleTab" disabled>③ AI判断根拠</button>
+            <button class="tab-button" onclick="showScreen('referral')" id="referralTab" disabled>④ 紹介・交渉支援</button>
+            <button class="tab-button" onclick="showScreen('record')">⑤ 搬送後記録</button>
+        </nav>
+
+        <!-- Screen ① Dashboard -->
+        <div id="dashboard" class="screen active">
+            <h2>地域内病院一覧 - リアルタイム状況</h2>
+            <div class="filter-section">
+                <label>診療科フィルター:
+                    <select id="departmentFilter" onchange="filterHospitals()">
+                        <option value="">すべて</option>
+                        <option value="内科">内科</option>
+                        <option value="外科">外科</option>
+                        <option value="整形外科">整形外科</option>
+                        <option value="小児科">小児科</option>
+                        <option value="循環器科">循環器科</option>
+                    </select>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="emergencyFilter" onchange="filterHospitals()">
+                    救急受入可能のみ表示
+                </label>
+            </div>
+            <div id="hospitalList" class="hospital-list"></div>
+        </div>
+
+        <!-- Screen ② Emergency/Referral Request Input -->
+        <div id="request" class="screen">
+            <h2>救急・紹介依頼入力</h2>
+            <form id="requestForm" onsubmit="submitRequest(event)">
+                <div class="form-group">
+                    <label for="patientAge">患者年齢:</label>
+                    <input type="number" id="patientAge" required min="0" max="120">
+                </div>
+                
+                <div class="form-group">
+                    <label for="symptoms">症状:</label>
+                    <textarea id="symptoms" required rows="3" placeholder="例: 胸痛、呼吸困難"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="severity">重症度:</label>
+                    <select id="severity" required>
+                        <option value="">選択してください</option>
+                        <option value="軽症">軽症</option>
+                        <option value="中等症">中等症</option>
+                        <option value="重症">重症</option>
+                        <option value="最重症">最重症</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">必要な診療科:</label>
+                    <select id="department" required>
+                        <option value="">選択してください</option>
+                        <option value="内科">内科</option>
+                        <option value="外科">外科</option>
+                        <option value="整形外科">整形外科</option>
+                        <option value="小児科">小児科</option>
+                        <option value="循環器科">循環器科</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="preferences">希望条件:</label>
+                    <textarea id="preferences" rows="2" placeholder="例: 自宅から近い、専門医希望"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">AI推薦を取得</button>
+            </form>
+            
+            <div id="recommendations" class="recommendations" style="display:none;">
+                <h3>AI推薦病院候補</h3>
+                <div id="recommendationList"></div>
+            </div>
+        </div>
+
+        <!-- Screen ③ AI Decision Rationale Display -->
+        <div id="rationale" class="screen">
+            <h2>AI判断根拠表示</h2>
+            <div id="rationaleContent"></div>
+        </div>
+
+        <!-- Screen ④ Referral/Negotiation Support -->
+        <div id="referral" class="screen">
+            <h2>紹介・交渉支援</h2>
+            <div id="referralContent">
+                <div class="document-section">
+                    <h3>紹介状ドラフト</h3>
+                    <textarea id="referralLetter" rows="10"></textarea>
+                    <button onclick="editDocument('referralLetter')" class="btn">編集</button>
+                </div>
+                
+                <div class="document-section">
+                    <h3>受入依頼文</h3>
+                    <textarea id="requestLetter" rows="8"></textarea>
+                    <button onclick="editDocument('requestLetter')" class="btn">編集</button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button onclick="sendReferral()" class="btn btn-primary">送信</button>
+                    <button onclick="cancelReferral()" class="btn btn-secondary">キャンセル</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen ⑤ Post-Transport Records -->
+        <div id="record" class="screen">
+            <h2>搬送後記録</h2>
+            <form id="recordForm" onsubmit="submitRecord(event)">
+                <div class="form-group">
+                    <label for="recordHospital">搬送先病院:</label>
+                    <select id="recordHospital" required>
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="acceptanceResult">受入結果:</label>
+                    <select id="acceptanceResult" required>
+                        <option value="">選択してください</option>
+                        <option value="受入成功">受入成功</option>
+                        <option value="受入拒否">受入拒否</option>
+                        <option value="転送">他病院へ転送</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="transportTime">所要時間（分）:</label>
+                    <input type="number" id="transportTime" required min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">備考:</label>
+                    <textarea id="notes" rows="4" placeholder="搬送時の状況や特記事項"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">記録を保存</button>
+            </form>
+            
+            <div class="record-history">
+                <h3>過去の搬送記録</h3>
+                <div id="recordList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
