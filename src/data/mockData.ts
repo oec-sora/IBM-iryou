@@ -1,0 +1,118 @@
+import type { Hospital } from '../types';
+
+export const mockHospitals: Hospital[] = [
+  {
+    id: 'h001',
+    name: '県立総合医療センター',
+    departments: ['内科', '外科', '整形外科', '脳神経外科', '循環器科', '救急科'],
+    availableBeds: 15,
+    totalBeds: 200,
+    hasOnCallDoctor: true,
+    acceptsEmergency: true,
+    location: {
+      address: '東京都千代田区霞が関1-2-3',
+      latitude: 35.6762,
+      longitude: 139.7503,
+    },
+    specialties: ['脳神経外科', '循環器科', '救急医療'],
+    pastPerformance: {
+      totalCases: 1250,
+      successRate: 96.5,
+    },
+  },
+  {
+    id: 'h002',
+    name: '市民病院',
+    departments: ['内科', '外科', '小児科', '産婦人科', '整形外科'],
+    availableBeds: 8,
+    totalBeds: 150,
+    hasOnCallDoctor: true,
+    acceptsEmergency: true,
+    location: {
+      address: '東京都新宿区西新宿2-8-1',
+      latitude: 35.6897,
+      longitude: 139.6920,
+    },
+    specialties: ['小児科', '産婦人科'],
+    pastPerformance: {
+      totalCases: 850,
+      successRate: 94.2,
+    },
+  },
+  {
+    id: 'h003',
+    name: '大学附属病院',
+    departments: ['内科', '外科', '脳神経外科', '循環器科', '呼吸器科', '消化器科', '救急科'],
+    availableBeds: 25,
+    totalBeds: 400,
+    hasOnCallDoctor: true,
+    acceptsEmergency: true,
+    location: {
+      address: '東京都文京区本郷7-3-1',
+      latitude: 35.7128,
+      longitude: 139.7620,
+    },
+    specialties: ['脳神経外科', '循環器科', '高度救命救急'],
+    pastPerformance: {
+      totalCases: 2100,
+      successRate: 97.8,
+    },
+  },
+  {
+    id: 'h004',
+    name: '地域中核病院',
+    departments: ['内科', '外科', '整形外科', '眼科', '耳鼻咽喉科'],
+    availableBeds: 5,
+    totalBeds: 100,
+    hasOnCallDoctor: false,
+    acceptsEmergency: false,
+    location: {
+      address: '東京都世田谷区三軒茶屋1-2-3',
+      latitude: 35.6433,
+      longitude: 139.6697,
+    },
+    specialties: ['整形外科'],
+    pastPerformance: {
+      totalCases: 450,
+      successRate: 92.1,
+    },
+  },
+  {
+    id: 'h005',
+    name: '救急専門病院',
+    departments: ['救急科', '外科', '脳神経外科', '循環器科', 'ICU'],
+    availableBeds: 10,
+    totalBeds: 80,
+    hasOnCallDoctor: true,
+    acceptsEmergency: true,
+    location: {
+      address: '東京都港区六本木3-4-5',
+      latitude: 35.6628,
+      longitude: 139.7302,
+    },
+    specialties: ['救急医療', '外傷治療', '脳卒中'],
+    pastPerformance: {
+      totalCases: 1680,
+      successRate: 95.7,
+    },
+  },
+  {
+    id: 'h006',
+    name: '心臓血管専門病院',
+    departments: ['循環器科', '心臓血管外科', '内科', 'ICU'],
+    availableBeds: 12,
+    totalBeds: 120,
+    hasOnCallDoctor: true,
+    acceptsEmergency: true,
+    location: {
+      address: '東京都渋谷区代々木1-2-3',
+      latitude: 35.6833,
+      longitude: 139.6964,
+    },
+    specialties: ['循環器科', '心臓血管外科', '不整脈治療'],
+    pastPerformance: {
+      totalCases: 920,
+      successRate: 98.2,
+    },
+  },
+];
