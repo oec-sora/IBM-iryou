@@ -90,7 +90,7 @@ const EmergencyRequest: React.FC<EmergencyRequestProps> = ({ onSubmit }) => {
           </label>
           <select
             value={severity}
-            onChange={(e) => setSeverity(e.target.value as any)}
+            onChange={(e) => setSeverity(e.target.value as 'low' | 'medium' | 'high' | 'critical')}
             style={{
               width: '100%',
               padding: '10px',
